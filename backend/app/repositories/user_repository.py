@@ -3,7 +3,7 @@ from typing import List, Optional
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.models.user import Account, DeviceHistory, LoginHistory, User, UserBehaviorProfile
+from app.models.user import Account, DeviceHistory, LoginHistory, Portfolio, User, UserBehaviorProfile
 
 
 class UserRepository:
@@ -19,6 +19,9 @@ class UserRepository:
     def get_primary_account(self, user_id: int) -> Optional[Account]:
         return self.db.scalar(select(Account).where(Account.user_id == user_id))
 
+    def get_account_by_id(self, account_id: int) -> Optional[Account]:
+        return self.db.get(Account, account_id)
+
     def get_behavior_profile(self, user_id: int) -> Optional[UserBehaviorProfile]:
         return self.db.scalar(select(UserBehaviorProfile).where(UserBehaviorProfile.user_id == user_id))
 
@@ -29,7 +32,22 @@ class UserRepository:
         rows = self.db.scalars(select(LoginHistory).where(LoginHistory.email == email, LoginHistory.success.is_(False)).order_by(LoginHistory.created_at.desc())).all()
         return rows[:5]
 
+    def get_portfolio(self, account_id: int, stock_code: str) -> Optional[Portfolio]:
+        return self.db.scalar(select(Portfolio).where(Portfolio.account_id == account_id, Portfolio.stock_code == stock_code))
+
+    def create_portfolio(self, portfolio: Portfolio) -> Portfolio:
+        self.db.add(portfolio)
+        self.db.flush()
+        return portfolio
+
     def create_login_history(self, history: LoginHistory) -> LoginHistory:
         self.db.add(history)
         self.db.flush()
         return history
+
+    def set_user_lock(self, user_id: int, is_locked: bool) -> Optional[User]:
+        user = self.get_by_id(user_id)
+        if user:
+            user.is_locked = is_locked
+            self.db.flush()
+        return user

@@ -1,6 +1,7 @@
 from datetime import datetime
+from typing import Optional
 
-from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.session import Base
@@ -17,6 +18,8 @@ class Order(Base):
     order_type: Mapped[str] = mapped_column(String(10))
     quantity: Mapped[int] = mapped_column(Integer)
     price: Mapped[float] = mapped_column(Float, default=0)
+    filled_quantity: Mapped[int] = mapped_column(Integer, default=0)
+    average_filled_price: Mapped[float] = mapped_column(Float, default=0)
     status: Mapped[str] = mapped_column(String(30), default="PENDING")
     device_id: Mapped[str] = mapped_column(String(128))
     ip_address: Mapped[str] = mapped_column(String(64))
@@ -29,6 +32,10 @@ class Order(Base):
 
     account = relationship("Account", back_populates="orders")
     executions = relationship("Execution", back_populates="order", cascade="all, delete-orphan")
+
+    @property
+    def remaining_quantity(self) -> int:
+        return max(self.quantity - self.filled_quantity, 0)
 
 
 class Execution(Base):

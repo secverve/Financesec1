@@ -65,8 +65,14 @@ Swagger -- http://localhost:8000/docs
 - POST /api/v1/auth/login
 - GET /api/v1/market/stocks
 - GET /api/v1/market/stocks/{stock_code}/quote
+- GET /api/v1/orders
 - POST /api/v1/orders
+- POST /api/v1/orders/{order_id}/amend
+- POST /api/v1/orders/{order_id}/cancel
 - GET /api/v1/admin/risk-events
+- POST /api/v1/admin/risk-events/{risk_event_id}/actions
+- POST /api/v1/admin/users/{user_id}/lock
+- POST /api/v1/admin/users/{user_id}/unlock
 
 ## 로그인 예시
 
@@ -116,8 +122,8 @@ curl -X POST http://localhost:8000/api/v1/orders \
 ## 다음 고도화 우선순위
 
 1. Alembic migration 도입 및 초기 스키마 버전 관리
-2. 주문 정정/취소/부분체결 엔진 확장
-3. 관리자 조치 API, 계정 잠금/해제, 블랙리스트 관리 UI 추가
+2. 추가인증 성공 후 주문 재개 및 OTP 검증 플로우 구현
+3. 블랙리스트 관리 API, 관리자 상세 화면, 조치 이력 UI 추가
 4. 실 시세 provider 연동 및 websocket 시세 push
 5. 리포트 HTML/PDF 생성기 추가
 6. React API 연동 및 인증 흐름 완성

@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -29,13 +30,31 @@ class OrderCreateRequest(BaseModel):
         return value
 
 
+class OrderAmendRequest(BaseModel):
+    quantity: int = Field(gt=0)
+    price: Optional[float] = Field(default=None, ge=0)
+    order_type: Optional[str] = None
+
+    @field_validator("order_type")
+    @classmethod
+    def validate_order_type(cls, value: Optional[str]) -> Optional[str]:
+        if value is None:
+            return value
+        if value not in {"MARKET", "LIMIT"}:
+            raise ValueError("order_type must be MARKET or LIMIT")
+        return value
+
+
 class OrderResponse(BaseModel):
     id: int
     stock_code: str
     side: str
     order_type: str
     quantity: int
+    filled_quantity: int
+    remaining_quantity: int
     price: float
+    average_filled_price: float
     status: str
     risk_score: int
     risk_level: str

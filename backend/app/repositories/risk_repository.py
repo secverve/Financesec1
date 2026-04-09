@@ -15,6 +15,9 @@ class RiskRepository:
         self.db.flush()
         return event
 
+    def get_event(self, risk_event_id: int) -> Optional[RiskEvent]:
+        return self.db.get(RiskEvent, risk_event_id)
+
     def create_rule_hit(self, rule_hit: RuleHit) -> RuleHit:
         self.db.add(rule_hit)
         self.db.flush()
