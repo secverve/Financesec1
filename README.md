@@ -35,10 +35,19 @@ mts-fds/
 - 관리자/사용자 화면 분리 React 레이아웃
 - seed 데이터 포함
 
-## 기본 계정
+## 실행 전 설정
 
-- admin@example.com / Admin1234!
-- user@example.com / User1234!
+```bash
+cp backend/.env.example backend/.env
+```
+
+- `DEFAULT_ADMIN_EMAIL`
+- `DEFAULT_ADMIN_PASSWORD`
+- `DEFAULT_USER_EMAIL`
+- `DEFAULT_USER_PASSWORD`
+- `SECRET_KEY`
+
+값을 환경에 맞게 직접 설정한 뒤 실행한다.
 
 ## 실행
 
@@ -59,13 +68,15 @@ Swagger -- http://localhost:8000/docs
 - POST /api/v1/orders
 - GET /api/v1/admin/risk-events
 
-## 주문 예시
+## 로그인 예시
 
 ```bash
 curl -X POST http://localhost:8000/api/v1/auth/login \
   -H 'Content-Type: application/json' \
-  -d '{"email":"user@example.com","password":"User1234!","ip_address":"1.1.1.1","region":"KR-SEOUL"}'
+  -d '{"email":"<YOUR_USER_EMAIL>","password":"<YOUR_USER_PASSWORD>","ip_address":"1.1.1.1","region":"KR-SEOUL"}'
 ```
+
+## 주문 예시
 
 ```bash
 curl -X POST http://localhost:8000/api/v1/orders \
@@ -100,6 +111,7 @@ curl -X POST http://localhost:8000/api/v1/orders \
 - 추가인증 요청 테이블 분리
 - 블랙리스트 계정/종목 테이블 분리
 - env 기반 설정 분리
+- 공개 문서에는 계정/비밀번호를 직접 기재하지 않음
 
 ## 다음 고도화 우선순위
 
