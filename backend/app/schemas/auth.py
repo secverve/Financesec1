@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel, EmailStr
 
 
@@ -13,3 +15,12 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
     role: str
     user_id: int
+
+
+class MeResponse(BaseModel):
+    user_id: int
+    email: EmailStr
+    full_name: str
+    role: str
+    is_locked: bool
+    primary_account_id: Optional[int] = None

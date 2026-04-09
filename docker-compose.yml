@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   postgres:
     image: postgres:16-alpine
@@ -31,7 +29,7 @@ services:
     build:
       context: ./backend
     env_file:
-      - ./backend/.env.example
+      - ./backend/.env
     environment:
       APP_ENV: docker
       DATABASE_URL: postgresql+psycopg://mts:mts@postgres:5432/mts
@@ -49,7 +47,7 @@ services:
     build:
       context: ./backend
     env_file:
-      - ./backend/.env.example
+      - ./backend/.env
     environment:
       APP_ENV: docker
       DATABASE_URL: postgresql+psycopg://mts:mts@postgres:5432/mts

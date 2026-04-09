@@ -18,6 +18,9 @@ class RiskRepository:
     def get_event(self, risk_event_id: int) -> Optional[RiskEvent]:
         return self.db.get(RiskEvent, risk_event_id)
 
+    def get_event_by_order_id(self, order_id: int) -> Optional[RiskEvent]:
+        return self.db.scalar(select(RiskEvent).where(RiskEvent.order_id == order_id))
+
     def create_rule_hit(self, rule_hit: RuleHit) -> RuleHit:
         self.db.add(rule_hit)
         self.db.flush()

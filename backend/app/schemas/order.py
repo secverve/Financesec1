@@ -45,6 +45,16 @@ class OrderAmendRequest(BaseModel):
         return value
 
 
+class AdditionalAuthVerifyRequest(BaseModel):
+    code: str
+
+
+class AdditionalAuthVerifyResponse(BaseModel):
+    order_id: int
+    order_status: str
+    auth_status: str
+
+
 class OrderResponse(BaseModel):
     id: int
     stock_code: str

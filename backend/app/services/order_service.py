@@ -115,6 +115,30 @@ class OrderService:
     def list_orders(self, user_id: int):
         return self.orders.list_user_orders(user_id)
 
+    def verify_additional_auth(self, user_id: int, order_id: int, code: str) -> dict:
+        order = self._get_user_order(user_id, order_id)
+        pending_auth = self.orders.get_pending_additional_auth(order_id)
+        if not pending_auth:
+            raise AppException("AUTH_REQUEST_NOT_FOUND", "Pending additional auth request not found", status.HTTP_404_NOT_FOUND)
+        if code != pending_auth.code_hint:
+            raise AppException("AUTH_CODE_INVALID", "Invalid additional auth code", status.HTTP_400_BAD_REQUEST)
+
+        pending_auth.status = "VERIFIED"
+        order.decision = "ALLOW"
+        if order.status == "HELD":
+            order.status = "ACCEPTED"
+            self._attempt_execution(order)
+
+        event = self.risks.get_event_by_order_id(order.id)
+        if event:
+            event.status = "AUTH_VERIFIED"
+            event.decision = "ALLOW_AFTER_AUTH"
+
+        self.audit.log(user_id, "ADDITIONAL_AUTH_VERIFIED", "order", str(order.id), "additional auth verified")
+        self.db.commit()
+        self.db.refresh(order)
+        return {"order_id": order.id, "order_status": order.status, "auth_status": pending_auth.status}
+
     def approve_held_order(self, order: Order) -> Order:
         if order.status not in {"HELD", "BLOCKED"}:
             raise AppException("ORDER_APPROVE_INVALID", "Order is not in a reviewable state")

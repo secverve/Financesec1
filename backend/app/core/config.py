@@ -14,14 +14,14 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+psycopg://mts:mts@localhost:5432/mts"
     redis_url: str = "redis://localhost:6379/0"
     market_data_provider: str = "mock"
-    default_admin_email: str = "admin@example.com"
+    default_admin_email: str = "demo-admin@example.com"
     default_admin_password: str = "Admin1234!"
-    default_user_email: str = "user@example.com"
+    default_user_email: str = "demo-user@example.com"
     default_user_password: str = "User1234!"
     additional_auth_code: str = "000000"
     cors_origins: Union[List[str], str] = ["http://localhost:3000"]
 
-    model_config = SettingsConfigDict(env_file=".env.example", case_sensitive=False)
+    model_config = SettingsConfigDict(env_file=(".env", ".env.example"), case_sensitive=False)
 
     @field_validator("cors_origins", mode="before")
     @classmethod

@@ -53,12 +53,30 @@ cp backend/.env.example backend/.env
 
 ```bash
 cd mts-fds
+cp backend/.env.example backend/.env
+# backend/.env 값 수정
 docker compose up --build
 ```
 
 백엔드 -- http://localhost:8000
 프론트 -- http://localhost:3000
 Swagger -- http://localhost:8000/docs
+
+## 데모 시나리오
+
+1. 사용자 계정으로 로그인
+2. 대시보드에서 보유 포지션, 시세, 최근 주문 확인
+3. 신규 주문 생성
+4. HELD 주문에 대해 추가인증 수행 또는 관리자 콘솔에서 승인/차단
+5. 관리자 화면에서 위험 이벤트 필터링, 계정 잠금/해제 시연
+
+## 포트폴리오 작성 포인트
+
+- FastAPI + React + PostgreSQL + Redis + Celery 기반 금융형 아키텍처
+- MTS 주문 라이프사이클과 FDS 룰 기반 위험판정 분리
+- 관리자 운영 콘솔과 사용자 MTS 화면 완전 분리
+- 감사로그, 관리자 조치 이력, 추가인증, 위험 이벤트 이력 저장
+- docker compose 기준 즉시 실행 가능한 데모 환경 제공
 
 ## 주요 API
 

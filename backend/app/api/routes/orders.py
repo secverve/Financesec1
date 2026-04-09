@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.api.deps import get_current_user
 from app.db.session import get_db
 from app.models.user import User
-from app.schemas.order import OrderAmendRequest, OrderCreateRequest, OrderResponse
+from app.schemas.order import AdditionalAuthVerifyRequest, AdditionalAuthVerifyResponse, OrderAmendRequest, OrderCreateRequest, OrderResponse
 from app.services.order_service import OrderService
 
 router = APIRouter()
@@ -34,3 +34,9 @@ def amend_order(order_id: int, payload: OrderAmendRequest, user: User = Depends(
 def cancel_order(order_id: int, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     order = OrderService(db).cancel_order(user.id, order_id)
     return OrderResponse.model_validate(order)
+
+
+@router.post("/{order_id}/additional-auth/verify", response_model=AdditionalAuthVerifyResponse)
+def verify_additional_auth(order_id: int, payload: AdditionalAuthVerifyRequest, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    result = OrderService(db).verify_additional_auth(user.id, order_id, payload.code)
+    return AdditionalAuthVerifyResponse(**result)
